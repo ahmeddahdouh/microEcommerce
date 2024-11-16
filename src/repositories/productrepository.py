@@ -1,3 +1,5 @@
+from itertools import product
+
 from fastapi import HTTPException
 from starlette import status
 from src.models.product_model import Product
@@ -63,6 +65,28 @@ class ProductRepository:
         for product in products:
             self.create_product(db,product)
         return {"message": "Liste de produits créée avec succès"}
+
+    @classmethod
+    def get_stock_by_id(self,db,product_id:int)-> dict:
+        db_product = db.query(Product).filter(Product.id == product_id).first()
+        if not db_product:
+            raise HTTPException(status_code=404,detail='item not found')
+        else :
+            return {
+                "name": db_product.name,
+                "stock": db_product.stock
+            }
+
+    @classmethod
+    def update_stock_for_product(self, db, quantité, produit_id):
+        product_db = self.get_product_by_id(db,produit_id)
+        if product_db:
+            product_db.stock = product_db.stock - quantité
+            db.commit()
+            db.refresh(product_db)
+            return product_db
+
+
 
 
 
