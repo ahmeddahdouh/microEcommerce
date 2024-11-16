@@ -1,4 +1,7 @@
 from typing import List
+
+from poetry.repositories import Repository
+
 from src.repositories.productrepository import ProductRepository
 from src.schemas.product_schema import ProductBase, ProductCreate
 
@@ -29,3 +32,15 @@ class ProductService:
     @classmethod
     def get_product_by_id(self,db,product_id:int):
         return ProductRepository.get_product_by_id(db, product_id)
+
+    @classmethod
+    def stock_availble(self,db,qty:int,product_id:int):
+        data_product = ProductRepository.get_stock_by_id(db,product_id)
+        if data_product['stock'] >= qty :
+            return True
+        else :
+            return False
+
+    @classmethod
+    def update_stock_for_product(self, db, quantité, produit_id):
+        ProductRepository.update_stock_for_product (db,quantité,produit_id)

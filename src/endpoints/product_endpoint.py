@@ -1,6 +1,8 @@
 from typing import List
 
 from fastapi import APIRouter
+
+from src.services.commande_service import CommandeService
 from src.services.product_service import ProductService
 
 from src.config.bdd_config import db_dependency
@@ -31,3 +33,7 @@ async def update_product(db:db_dependency,product_id:int,product:ProductCreate):
 @product_router.delete("/{product_id}")
 async def delete_product(db:db_dependency,product_id:int):
     return ProductService.delete_product(db,product_id)
+
+
+
+

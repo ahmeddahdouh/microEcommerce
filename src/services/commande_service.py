@@ -1,9 +1,7 @@
-from lib2to3.fixer_util import Comma
-
 from sqlalchemy.orm import Session
-
 from src.repositories.commande_repository import CommandeRepository
 from src.schemas.commande_schema import CommandeBase, CommandeUpdate
+from src.services.product_service import ProductService
 
 
 class CommandeService:
@@ -11,7 +9,11 @@ class CommandeService:
         pass
 
     def create_commande(db,commande:CommandeBase):
-        return CommandeRepository.create(db,commande)
+        if (ProductService.stock_availble (db,commande.quantité,commande.produit_id)):
+            ProductService.update_stock_for_product(db,commande.quantité,commande.produit_id)
+            return CommandeRepository.create(db,commande)
+        else :
+            return {'message',"la quantité demandé du produit n'est pas disponible dans le stock" }
 
     def get_commandes(db):
         return CommandeRepository.get_commandes(db)
